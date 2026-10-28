@@ -1,0 +1,46 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: vlunaklick
+status: open
+reviewed: 2026-10-28
+signature: v1.eyJzdWIiOiIxMDc5IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyMDYwOTMsImV4cCI6MTc5MzI5MjQ5M30.oBpqCzERhY9wnY8L_HnB4R30RwTHN5WkcMH79N3RLyo
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+[#4471](/kb/incidents/4471) says one bug: the parser reads dates month first. Its reports hold three
+problems with three different fixes. The parser fix that is queued closes only the first one.
+
+<Callout kind="warn">
+Fixing the parser leaves the booking-v3 hint and the one-day shift open. Each has its own ticket below.
+</Callout>
+
+## The split
+
+<ProblemTable ticket={4471} repo="vlunaklick/megadev" issues={{ parser: 1, hint: 2, shift: 3 }} />
+
+## What each one is
+
+- **`parser`**: the shared parser reads month first, and every tenant on file writes the day first.
+  Day and month swap: 7 April becomes 4 July. Any channel.
+- **`hint`**: the booking-v3 form prints `MM/DD/YYYY` under its date field. Day-first tenants type
+  month first because the form tells them to, and the form reads it day first. Only the `form` channel,
+  only booking-v3 tenants. Fixing the parser does not fix this.
+- **`shift`**: the date moves by one day, not day ↔ month. "Client in Lisbon got Tuesday. Client in
+  Toronto got Monday." That points at a time zone conversion. A month-first parser cannot do this. The
+  desk noted these as a one-day move (`desk-notes.json`), but `causes.ts` files them under `parser` by
+  tenant, so the #4471 table counts them there.
+
+## How it is counted
+
+- The export pages overlap, so a report can come twice. One id, one report.
+- Each report goes to one problem: a one-day move from the desk notes first, then `causeOf` by tenant.
+- Intake's tag is a guess from the browser locale. Counting by tag gives a different, wrong split.
+- The table is built from `reports-4471.json` at render time, so it follows the desk as it keeps merging.
+
+<RenderStamp {signature} />
