@@ -14,15 +14,24 @@ signature: v1.eyJzdWIiOiIxMDc5IiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYX
 </script>
 
 [#4471](/kb/incidents/4471) says one bug: the parser reads dates month first. Its reports hold three
-problems with three different fixes. The parser fix that is queued closes only the first one.
+problems with three different fixes. The parser fix closed only the first one.
 
 <Callout kind="warn">
-Fixing the parser leaves the booking-v3 hint and the one-day shift open. Each has its own ticket below.
+Engineering closed #4471 on 5 October. <code>parser</code> is fixed and <code>hint</code> won't be fixed, because booking-v3 is
+retired. The one-day <code>shift</code> is still open: a dd/mm fix cannot move a date back by one day.
 </Callout>
 
 ## The split
 
 <ProblemTable ticket={4471} repo="vlunaklick/megadev" issues={{ parser: 1, hint: 2, shift: 3 }} />
+
+## Where each one stands
+
+| problem | state | why |
+| --- | --- | --- |
+| `parser` | fixed · ticket closed | `fix(dates): parse dd/mm for eu locales`, 5 Oct |
+| `hint` | won't fix · ticket closed | booking-v3 form retired |
+| `shift` | **open** | not in the engineering update; needs a time zone fix |
 
 ## What each one is
 
