@@ -34,12 +34,13 @@ Fixing the parser leaves the booking-v3 hint and the one-day shift open. Each ha
 - **`shift`**: the date moves by one day, not day ↔ month. "Client in Lisbon got Tuesday. Client in
   Toronto got Monday." That points at a time zone conversion. A month-first parser cannot do this. The
   desk noted these as a one-day move (`desk-notes.json`), but `causes.ts` files them under `parser` by
-  tenant, so the #4471 table counts them there.
+  tenant, so they are counted there and footnoted.
 
 ## How it is counted
 
 - The export pages overlap, so a report can come twice. One id, one report.
-- Each report goes to one problem: a one-day move from the desk notes first, then `causeOf` by tenant.
+- Each report is counted by `causeOf`, by tenant, the desk's own view. The one-day moves stay counted
+  under `parser`, where the desk files them, and are footnoted with their own ticket.
 - Intake's tag is a guess from the browser locale. Counting by tag gives a different, wrong split.
 - The table is built from `reports-4471.json` at render time, so it follows the desk as it keeps merging.
 
